@@ -9,18 +9,17 @@ void Game::setup() {
     deck.fill();
     deck.shuffle();
 
-    // Создаем двух игроков
     players.push_back(Player()); 
     players.push_back(Player()); 
 
-    // Раздаем карты
+    // Роздача карти
     for (int i = 0; i < 7; i++) {
         for (int p = 0; p < players.size(); p++) {
             players[p].addCard(deck.draw());
         }
     }
 
-    // Стартовая карта (не должна быть черной)
+    // Стартова карта 
     tableCard = deck.draw();
     while (tableCard.getColor() == "Black") {
         tableCard = deck.draw();
@@ -29,29 +28,28 @@ void Game::setup() {
 
 void Game::play() {
     while (isGameRunning) {
-        // Очистка экрана (визуальная)
         cout << string(20, '\n'); 
         cout << "========================================" << endl;
-        cout << "КАРТА НА СТОЛЕ: ";
+        cout << "Карта на столі: ";
         tableCard.Print(); 
         cout << "========================================" << endl;
 
         Player& currentPlayer = players[currentPlayerIdx];
-        cout << "СЕЙЧАС ХОДИТ ИГРОК №" << currentPlayerIdx << endl;
+        cout << "Зараз ходить ігрок №" << currentPlayerIdx << endl;
         currentPlayer.showHand();
 
         int choice;
-        cout << "\nВыбери номер карты (или -1, чтобы взять из колоды): ";
+        cout << "\nВибери номер карти (або -1, щоб взяти з колоди): ";
         cin >> choice;
 
         if (choice == -1) {
-            // Игрок берет карту и ход ПЕРЕДАЕТСЯ
+            // Ігрок бере карту і хід передаєтся
             Card drawn = deck.draw();
             cout << "Вы взяли карту: ";
             drawn.Print();
             currentPlayer.addCard(drawn);
             
-            // Переход хода
+            // перехід хода
             currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
             continue; 
         } 
@@ -60,22 +58,22 @@ void Game::play() {
             Card chosenCard = currentPlayer.getCard(choice);
 
             if (chosenCard.CanBePlayedOn(tableCard)) {
-                // ПРАВИЛЬНЫЙ ХОД
+                // Привльний хід
                 tableCard = chosenCard;
                 currentPlayer.removeCard(choice);
 
-                // Если победа
+                // перевірка на виграш
                 if (currentPlayer.getSize() == 0) {
-                    cout << "ПОЗДРАВЛЯЕМ! ИГРОК №" << currentPlayerIdx << " ВЫИГРАЛ!" << endl;
+                    cout << "Вітаємо! Ігрок №" << currentPlayerIdx << " Виграв!" << endl;
                     isGameRunning = false;
                     break;
                 }
 
                 int effect = tableCard.getIdNumberCard();
 
-                // Обработка Wild (черных карт)
+                // Обробка карт Wild
                 if (tableCard.getColor() == "Black") {
-                    cout << "Выберите цвет (Red, Yellow, Green, Blue): ";
+                    cout << "Вибери колір (Red, Yellow, Green, Blue): ";
                     string newColor; 
                     cin >> newColor;
                     tableCard.setColor(newColor);
@@ -84,18 +82,18 @@ void Game::play() {
                 // Логика спецэффектов (Skip=10, Rev=11, +2=12, +4=14)
                 // Если спецкарта, то индекс меняется ЕЩЕ РАЗ (пропуск хода)
                 if (effect == 10 || effect == 11) {
-                    cout << "СЛЕДУЮЩИЙ ИГРОК ПРОПУСКАЕТ ХОД!" << endl;
+                    cout << "Наступний ігрок пропускає хід!" << endl;
                     currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
                 }
                 else if (effect == 12) {
-                    cout << "СЛЕДУЮЩИЙ БЕРЕТ +2 И ПРОПУСКАЕТ ХОД!" << endl;
+                    cout << "Наступний бере +2 і пропускає хід!" << endl;
                     int next = (currentPlayerIdx + 1) % players.size();
                     players[next].addCard(deck.draw());
                     players[next].addCard(deck.draw());
                     currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
                 }
                 else if (effect == 14) {
-                    cout << "WILD +4! СЛЕДУЮЩИЙ БЕРЕТ 4 КАРТЫ!" << endl;
+                    cout << "WILD +4! Наступний бере 4 карти!" << endl;
                     int next = (currentPlayerIdx + 1) % players.size();
                     for(int i=0; i<4; i++) players[next].addCard(deck.draw());
                     currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
@@ -106,13 +104,13 @@ void Game::play() {
             } 
             else {
                 // ОШИБОЧНЫЙ ХОД - Повтор без смены индекса
-                cout << "\033[31mЭтой картой нельзя ходить! Попробуй выбрать другую.\033[0m" << endl;
-                cout << "Нажми Enter, чтобы продолжить...";
+                cout << "\033[31mЦією картою не можна ходити! Попробуй вибрати іншу.\033[0m" << endl;
+                cout << "Нажми Enter, щоб продовжити...";
                 cin.ignore(); cin.get();
                 // Мы не меняем currentPlayerIdx, поэтому цикл начнется заново для того же игрока
             }
         } else {
-            cout << "Неверный ввод! Попробуй снова." << endl;
+            cout << "Невірний ввід! Попробуй знову." << endl;
             cin.ignore(); cin.get();
         }
     }

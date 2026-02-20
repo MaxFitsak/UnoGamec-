@@ -10,17 +10,13 @@ void Desk::fill(){
 }
 
 void Desk::shuffle() {
-    // 1. Получаем случайное число от системы
-    std::random_device rd;
-    // 2. Инициализируем генератор Вихрь Мерсенна этим числом
-    std::mt19937 g(rd());
-    // 3. Перемешиваем вектор от начала до конца
-    std::shuffle(allCards.begin(), allCards.end(), g);
+    std::random_device rd; // Отримаємо випадкове число від системи
+    std::mt19937 g(rd());// Ініціалізуем генератор Вихирь Мерсенна цим числом
+    std::shuffle(allCards.begin(), allCards.end(), g); // Перемішаемо ветор віт початку до кінця
 }
 
 Card Desk::draw() {
-    if (allCards.empty()) {
-        // Если карты кончились, можно заново заполнить и перемешать
+    if (allCards.empty()) { // Якщо карти закінчились в колоді перемішати з початку
         fill();
         shuffle();
     }

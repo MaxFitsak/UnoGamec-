@@ -4,11 +4,10 @@
 #include <string>
 
 
-Card::Card(){ 
+Card::Card(){
     idCard = 0;
     idNUmberCard = 0;
     Color = "Unklow";
-    cout << "\033[31mConstructor Creater\033[0m" << endl;
 };
 
 Card::Card(int index){
@@ -21,7 +20,7 @@ Card::Card(int index){
     NumberCard();
 };
 
-void Card::ColorCard(){ 
+void Card::ColorCard(){
     if (idCard / 25 == 0){ Color = "Red";}
     else if (idCard / 25 == 1){ Color =  "Yellow"; }
     else if (idCard / 25 == 2){ Color =  "Green"; }
@@ -64,19 +63,13 @@ bool Card::isSpecial() const {
 }
 
 bool Card::CanBePlayedOn(const Card& other) {
-    // Черную карту (Wild) можно класть на что угодно
     if (this->Color == "Black") return true;
-    
-    // Если цвета совпали
     if (this->Color == other.Color) return true;
-    
-    // Если номера/типы совпали (например, Skip на Skip)
     if (this->idNUmberCard == other.idNUmberCard) return true;
     
     return false;
 }
 
-// Добавим этот метод в Card.cpp и Card.h, чтобы менять цвет Wild-карт
 void Card::setColor(string newColor) {
     if (Color == "Black") {
         Color = newColor;

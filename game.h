@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "player.h"
-#include "desk.h" // У тебя класс называется Desk
+#include "desk.h"
 
 class Game {
 private:
